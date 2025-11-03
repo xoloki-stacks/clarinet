@@ -524,7 +524,7 @@ describe("simnet can transfer stx", () => {
 
 describe("simnet can mint stx", () => {
   it("can mint stx", () => {
-    simnet.mintSTX(address1, BigInt(1000));
+    simnet.mintSTX(address1, 1000);
     const stxBalances = simnet.getAssetsMap().get("STX");
     const stxAddress1 = stxBalances?.get(address1);
     expect(stxAddress1).toBe(100000000001000n);

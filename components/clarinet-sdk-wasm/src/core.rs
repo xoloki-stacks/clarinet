@@ -1115,7 +1115,12 @@ impl SDK {
     }
 
     #[wasm_bindgen(js_name=mintSTX)]
-    pub fn mint_stx(&mut self, recipient: String, amount: u64) -> Result<String, String> {
+    pub fn mint_stx(
+        &mut self,
+        recipient: String,
+        #[wasm_bindgen(unchecked_param_type = "number")]
+        amount: u64,
+    ) -> Result<String, String> {
         if PrincipalData::parse(&recipient).is_err() {
             return Err(format!("Invalid recipient address '{recipient}'."));
         }
