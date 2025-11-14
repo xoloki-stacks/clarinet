@@ -1,32 +1,7 @@
-use std::io::Write;
-use std::process::{Command, Stdio};
+mod cli;
 
 fn run_console_command(args: &[&str], commands: &[&str]) -> Vec<String> {
-    let temp_dir = tempfile::tempdir().unwrap();
-    let mut child = Command::new(env!("CARGO_BIN_EXE_clarinet"))
-        .args(["console"])
-        .args(args)
-        .current_dir(&temp_dir)
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .stderr(Stdio::piped())
-        .spawn()
-        .expect("Failed to start console");
-
-    let stdin = child.stdin.as_mut().expect("Failed to open stdin");
-    for command in commands {
-        stdin
-            .write_all(command.as_bytes())
-            .expect("Failed to write to stdin");
-        stdin.write_all(b"\n").expect("Failed to write newline");
-    }
-
-    let output = child.wait_with_output().expect("Failed to read stdout");
-    assert!(output.status.success(), "Console command failed");
-
-    let stdout_str = String::from_utf8_lossy(&output.stdout);
-    // always skip the first 3 lines (console instructions)
-    stdout_str.lines().skip(3).map(|s| s.to_string()).collect()
+    cli::run_command("console", args, commands, Some(3))
 }
 
 #[test]
