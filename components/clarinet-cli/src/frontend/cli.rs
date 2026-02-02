@@ -1053,6 +1053,7 @@ pub fn main() {
                             &cmd.deployment_plan_path,
                             cmd.use_on_disk_deployment_plan,
                             cmd.use_computed_deployment_plan,
+                            StacksNetwork::Simnet,
                         );
 
                         if !artifacts.success {
@@ -1194,6 +1195,7 @@ pub fn main() {
                 &cmd.deployment_plan_path,
                 cmd.use_on_disk_deployment_plan,
                 cmd.use_computed_deployment_plan,
+                StacksNetwork::Simnet,
             );
 
             let diags_digest = DiagnosticsDigest::new(&artifacts.diags, &deployment);
@@ -1401,6 +1403,7 @@ pub fn load_deployment_and_artifacts_or_exit(
     deployment_plan_path: &Option<String>,
     force_on_disk: bool,
     force_computed: bool,
+    network: StacksNetwork,
 ) -> (
     DeploymentSpecification,
     Option<String>,
@@ -1408,12 +1411,7 @@ pub fn load_deployment_and_artifacts_or_exit(
 ) {
     let result = match deployment_plan_path {
         None => {
-            let res = load_deployment_if_exists(
-                manifest,
-                &StacksNetwork::Simnet,
-                force_on_disk,
-                force_computed,
-            );
+            let res = load_deployment_if_exists(manifest, &network, force_on_disk, force_computed);
             match res {
                 Some(Ok(deployment)) => {
                     println!(
